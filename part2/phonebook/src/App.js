@@ -1,49 +1,74 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import React from 'react'
-import Filter from "./components/Filter";
-import PersonForm from "./components/PersonForm";
-import Persons from "./components/Persons";
+import Filter from "./components/Filter"
+import PersonForm from "./components/PersonForm"
+import Persons from "./components/Persons"
+import personService from "./services/Persons"
 
 
 
 const App = () => {
 
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
   const [newPerson, setNewPerson] = useState({
     name: '',
     number: '',
-    id: 1
   })
   const [filter, setFilter] = useState("");
-  const [personsToShow, setPersonsToShow] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]);
+  const [personsToShow, setPersonsToShow] = useState([]);
+
+
+  useEffect(() => {
+    personService
+      .getAll()
+      .then((returnedPerson) => {
+        setPersons(returnedPerson)
+        setPersonsToShow(returnedPerson)
+      })
+  }, [])
 
 
   const addPerson = (event) => {
     event.preventDefault()
-    if (persons.some(person => person.name === newPerson.name)) {
-      window.confirm(`${newPerson.name} is already added to phonebook`)
+    const currentName = persons.find(person => person.name === newPerson.name)
+    // If added name doesn't exist, create new contact
+    if (currentName === undefined) {
+      personService
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson));
+          setPersonsToShow(persons.concat(returnedPerson));
+        })
     }
     else {
-      const personsCopy = [...persons]
-      personsCopy.push(newPerson)
-      setPersons(personsCopy)
-      setPersonsToShow(personsCopy)
+      if (window.confirm(
+        `${newPerson.name} is already added to phonebook, replace the old number with a new one?`
+      )) {
+        personService
+          .update(currentName.id, newPerson)
+          .then(returnedPerson => {
+            const updatedPersonsWithANewNumber = persons.map(person => person.id === returnedPerson.id ? returnedPerson : person)
+            setPersons(updatedPersonsWithANewNumber)
+            setPersonsToShow(updatedPersonsWithANewNumber)
+          })
+      }
     }
-    setNewPerson({
-      name: '',
-      number: '',
-      id: 1
+    setNewPerson({ 
+      name: "", 
+      number: "" 
     })
+  }
+
+  const deletePerson = (person) => {
+    const {id, name} = person
+    if (window.confirm(`Delete ${name} ?`)) {
+      personService.remove(id).then(response => {
+        const updatedPersonsWithDeletedNumber = persons.filter(person => person.id !== id)
+        setPersons(updatedPersonsWithDeletedNumber)
+        setPersonsToShow(updatedPersonsWithDeletedNumber)
+      })
+    }
+
   }
 
   const handleContactChange = (event) => {
@@ -64,7 +89,7 @@ const App = () => {
       <Filter filter={filter} handleSearchChange={handleSearchChange} />
       <PersonForm addPerson={addPerson} newPerson={newPerson} handleContactChange={handleContactChange} />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} deletePerson={deletePerson}/>
     </div>
   )
 }
