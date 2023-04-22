@@ -3,6 +3,7 @@ import React from 'react'
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
+import Notification from "./components/Notification"
 import personService from "./services/Persons"
 
 
@@ -16,6 +17,10 @@ const App = () => {
   })
   const [filter, setFilter] = useState("");
   const [personsToShow, setPersonsToShow] = useState([]);
+  const [message, setMessage] = useState({
+    text: null,
+    isError: false,
+  });
 
 
   useEffect(() => {
@@ -38,7 +43,15 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson));
           setPersonsToShow(persons.concat(returnedPerson));
+          setMessage({
+            text: `Added ${newPerson.name} to phonebook`,
+            isError: false
+          });
         })
+        .catch(error => setMessage({
+          text: error.message,
+          isError: true
+        }))
     }
     else {
       if (window.confirm(
@@ -50,23 +63,60 @@ const App = () => {
             const updatedPersonsWithANewNumber = persons.map(person => person.id === returnedPerson.id ? returnedPerson : person)
             setPersons(updatedPersonsWithANewNumber)
             setPersonsToShow(updatedPersonsWithANewNumber)
+            setMessage({
+              text: `Updated ${newPerson.name}'s number`,
+              isError: false
+            })
+          })
+          .catch(error => {
+            if (error.response.status === 404) {
+              setMessage({
+                text: `Information of ${newPerson.name} has already been removed from server`,
+                isError: true
+              })
+            }
+            else {
+              setMessage({
+                text: error.message,
+                isError: true
+              })
+            }
           })
       }
     }
-    setNewPerson({ 
-      name: "", 
-      number: "" 
+    setNewPerson({
+      name: "",
+      number: ""
     })
   }
 
   const deletePerson = (person) => {
-    const {id, name} = person
+    const { id, name } = person
     if (window.confirm(`Delete ${name} ?`)) {
-      personService.remove(id).then(response => {
-        const updatedPersonsWithDeletedNumber = persons.filter(person => person.id !== id)
-        setPersons(updatedPersonsWithDeletedNumber)
-        setPersonsToShow(updatedPersonsWithDeletedNumber)
-      })
+      personService
+        .remove(id).then(response => {
+          const updatedPersonsWithDeletedNumber = persons.filter(person => person.id !== id)
+          setPersons(updatedPersonsWithDeletedNumber)
+          setPersonsToShow(updatedPersonsWithDeletedNumber)
+          setMessage({
+            text: `Removed ${name} from phonebook`,
+            isError: false
+          })
+        })
+        .catch(error => {
+          if (error.response.status === 404) {
+            setMessage({
+              text: `Information of ${person.name} has already been removed from server`,
+              isError: true
+            })
+          }
+          else {
+            setMessage({
+              text: error.message,
+              isError: true
+            })
+          }
+        })
     }
 
   }
@@ -86,10 +136,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification text={message.text} isError={message.isError} />
       <Filter filter={filter} handleSearchChange={handleSearchChange} />
       <PersonForm addPerson={addPerson} newPerson={newPerson} handleContactChange={handleContactChange} />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} deletePerson={deletePerson}/>
+      <Persons personsToShow={personsToShow} deletePerson={deletePerson} />
     </div>
   )
 }
