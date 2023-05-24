@@ -2,24 +2,19 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
-const Person = require("./models/person");
+const Person = require('./models/person')
 
 app.use(express.json())
 app.use(express.static('build'))
 
 
-morgan.token("body", (request) => {
-  return request.method === "POST" ? JSON.stringify(request.body) : ""
+morgan.token('body', (request) => {
+  return request.method === 'POST' ? JSON.stringify(request.body) : ''
 })
 
 app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+  morgan(':method :url :status :res[content-length] - :response-time ms :body')
 )
-
-const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(persons => {
@@ -59,7 +54,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
     .then(() => {
-      response.status(204).end();
+      response.status(204).end()
     })
     .catch(error => next(error))
 })
@@ -87,7 +82,7 @@ app.post('/api/persons', (request, response, next) => {
   person
     .save()
     .then((savedPerson) => {
-      response.json(savedPerson);
+      response.json(savedPerson)
     })
     .catch(error => next(error))
 })
@@ -112,7 +107,6 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-// handler of requests with unknown endpoint
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
@@ -120,10 +114,16 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
 
   next(error)
 }
 
-// handler of requests with result to errors
 app.use(errorHandler)
+
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
