@@ -1,7 +1,7 @@
 ### flyctl
-[https://fly.io/docs/hands-on/install-flyctl/](Install)  
-[https://fly.io/docs/hands-on/sign-up/](Sign up)  
-[https://fly.io/docs/hands-on/sign-in/](Sign in)  
+[Install](https://fly.io/docs/hands-on/install-flyctl/)  
+[Sign up](https://fly.io/docs/hands-on/sign-up/)  
+[Sign in](https://fly.io/docs/hands-on/sign-in/)  
 
 Run cell below to enable `fly` commmand:
 ```bash
