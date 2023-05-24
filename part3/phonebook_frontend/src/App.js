@@ -49,7 +49,7 @@ const App = () => {
           });
         })
         .catch(error => setMessage({
-          text: error.message,
+          text: error.response.data.error,
           isError: true
         }))
     }
@@ -77,7 +77,7 @@ const App = () => {
             }
             else {
               setMessage({
-                text: error.message,
+                text: error.response.data.error,
                 isError: true
               })
             }
@@ -112,7 +112,7 @@ const App = () => {
           }
           else {
             setMessage({
-              text: error.message,
+              text: error.response.data.error,
               isError: true
             })
           }
