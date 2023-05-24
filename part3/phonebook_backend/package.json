@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../phonebook_frontend && npm run build --prod && cp -r build ../phonebook_backend/",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
   },
   "author": "Phi Dang",
   "license": "MIT",
@@ -22,6 +23,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^8.41.0",
     "nodemon": "^2.0.22"
   },
   "proxy": "https://localhost:3001"
