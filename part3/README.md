@@ -1,3 +1,6 @@
+### Structure
+![Structure](./img/structure.png)
+
 ### flyctl
 [Install](https://fly.io/docs/hands-on/install-flyctl/)  
 [Sign up](https://fly.io/docs/hands-on/sign-up/)  
