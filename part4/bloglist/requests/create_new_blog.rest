@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Makeup on the day you go on a trip!",
+  "author": "Aya Asahina",
+  "url": "https://www.youtube.com/watch?v=mKhq3vfv1Os",
+  "likes": 211
+}
