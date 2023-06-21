@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imtob2FtYXAiLCJpZCI6IjY0OTBiZTY3MTIzZjdiYWIzYzljZjU2YSIsImlhdCI6MTY4NzI4MDAxNSwiZXhwIjoxNjg3MjgzNjE1fQ.1sQ33sl26hx1t_u7riX_yuu0KbQWulLNdqRSv-lJCaE
+Authorization: Bearer 
 
 {
   "title": "How to play Akali quadra kill",
