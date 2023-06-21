@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imtob2FtYXAiLCJpZCI6IjY0OTBiZTY3MTIzZjdiYWIzYzljZjU2YSIsImlhdCI6MTY4NzI4MDAxNSwiZXhwIjoxNjg3MjgzNjE1fQ.1sQ33sl26hx1t_u7riX_yuu0KbQWulLNdqRSv-lJCaE
 
 {
-  "title": "Makeup on the day you go on a trip!",
-  "author": "Aya Asahina",
-  "url": "https://www.youtube.com/watch?v=mKhq3vfv1Os",
-  "likes": 211
+  "title": "How to play Akali quadra kill",
+  "author": "Mark Nguyen",
+  "url": "https://www.professorakalikhoamap.com",
+  "likes": 1412
 }
