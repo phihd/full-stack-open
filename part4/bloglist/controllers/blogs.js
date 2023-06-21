@@ -1,5 +1,7 @@
+const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -17,9 +19,18 @@ blogsRouter.get('/:id', async (request, response, next) => {
 })
 
 blogsRouter.post('/', async (request, response, next) => {
-  const body = request.body
-  const user = await User.findById(body.userId)
+  const token = request.token
+  if (!token) {
+    return response.status(401).json({ error: 'token missing' })
+  }
 
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
+  const body = request.body
+  const user = request.user
   const blog = await new Blog({
     title: body.title,
     author: body.author,
@@ -29,15 +40,36 @@ blogsRouter.post('/', async (request, response, next) => {
   })
 
   const savedBlog = await blog.save()
-  user.notes = user.notes.concat(savedBlog._id)
+  user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
 
   response.status(201).json(savedBlog)
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {
-  await Blog.findByIdAndRemove(request.params.id)
-  response.status(204).end()
+  const token = request.token
+  if (!token) {
+    return response.status(401).json({ error: 'token missing' })
+  }
+
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const id = request.params.id
+  const blog = await Blog.findById(id)
+
+  if (!blog) {
+    response.status(404).json({ error: 'blog id cannot be found' })
+  }
+
+  const user = request.user
+  if (blog.user.toString() === user.id.toString()) {
+    await Blog.deleteOne({ _id: id })
+    response.sendStatus(204).end()
+  } else {
+    response.status(401).json({ error: 'blog can be deleted only by the user who added the blog' });
+  }
 })
 
 blogsRouter.put('/:id', async (request, response, next) => {
