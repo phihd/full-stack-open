@@ -38,13 +38,14 @@ const Blog = ({ blog, updateLikes, deleteBlog, current_username }) => {
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} {blog.author} {' '}
+        <span className='title'>{blog.title} - </span>
+        <span className='author'>{blog.author} </span>
         <button onClick={toggleVisibility}>
           {visible ? 'hide' : 'view'}
         </button>
       </div>
       {visible && (
-        <div >
+        <div className='details'>
           <div>{blog.url}</div>
           <div>
             Likes: {blog.likes}{' '}
