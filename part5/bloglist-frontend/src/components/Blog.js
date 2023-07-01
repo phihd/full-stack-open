@@ -36,7 +36,7 @@ const Blog = ({ blog, updateLikes, deleteBlog, current_username }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div className='blog' style={blogStyle}>
       <div>
         <span className='title'>{blog.title} - </span>
         <span className='author'>{blog.author} </span>
@@ -49,13 +49,13 @@ const Blog = ({ blog, updateLikes, deleteBlog, current_username }) => {
           <div>{blog.url}</div>
           <div>
             Likes: {blog.likes}{' '}
-            <button onClick={handleLike}>
+            <button id='like-button' onClick={handleLike}>
               like
             </button>
           </div>
           <div>{blog.user.name}</div>
           {blog.user.username === current_username && (
-            <button onClick={handleDelete}>
+            <button id='delete-button' onClick={handleDelete}>
               delete
             </button>
           )}
