@@ -1,5 +1,5 @@
 {
-  "name": "routed-anecdotes",
+  "name": "bloglist-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,8 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.7",
+    "@mui/material": "^5.16.7",
+    "@reduxjs/toolkit": "^1.9.5",
+    "axios": "^1.7.7",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-redux": "^8.1.1",
     "react-router-dom": "^6.27.0"
   },
   "devDependencies": {
